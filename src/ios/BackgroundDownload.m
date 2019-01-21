@@ -189,13 +189,12 @@ NSString *const FLTDownloadQueue = @"FLTDownloadQueue";
                 [fileManager createFileAtPath:targetURL.path contents:[fileManager contentsAtPath:[location path]] attributes:nil];
             } else {
                 NSData *fileData = [NSData dataWithContentsOfFile:[location path]];
-                NSError *error = nil;
-                NSDictionary *fileDict = [NSJSONSerialization JSONObjectWithData:fileData options:kNilOptions error:&error];
                 NSMutableDictionary *muteDict = [dict mutableCopy];
-                
-                if (fileDict[@"message"])
+                NSString *message = [[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding];
+
+                if (message)
                 {
-                    muteDict[@"message"] = fileDict[@"message"];
+                    muteDict[@"message"] = message;
                     [array replaceObjectAtIndex:[array indexOfObject:dict] withObject:muteDict];
                     [[NSUserDefaults standardUserDefaults] setObject:array forKey:FLTDownloadQueue];
                     [[NSUserDefaults standardUserDefaults] synchronize];
